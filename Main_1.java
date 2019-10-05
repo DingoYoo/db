@@ -56,13 +56,7 @@ public class Main {
 	int x= (int) (Math.random()*700+1), y=0;
 	int x1= (int) (Math.random()*700+1);*/
 
-	private final int INIT_POS_X = 500;
-	private final int INIT_POS_Y = 500;
 
-	private int X =INIT_POS_X;
-	private final int MOV_POS_X = 10;
-
-	private int score = 0;
 	private final int CS_MARGIN = 100;  		// coffee, stone
 	private final int B_MARGIN = 180;  		// bigstone
 	private final int NEW_INTERVAL= 2;	// coffee, stone 나타나는 주기
@@ -74,8 +68,6 @@ public class Main {
 	private final int COFFEE_INTERVAL = 2;
 	private final int STONE_INTERVAL = 2;
 	private final int BIG_STONE_INTERVAL = 10;
-
-
 	private final String BACKGROUND = "background.png";
 	private final String PLAY_BACKGROUND = "playing_background.jpg";
 	private final String PLAY_CH = "Penguin.png";
@@ -85,19 +77,14 @@ public class Main {
 	private final String STONE = "stone.png";
 	private final String BIGSTONE = "bigstone.jpg";
 	private final String D_IMAGE = "stone.png";
-
-	
-	private String[] item_list = {COFFEE1, COFFEE2, COFFEE3, STONE};
-	
-
 	private final String START_SOUND = "backgroundSound.wav";  
 	//private AudioClip backgroundSound;
 	ArrayList<Direction_CS> fallingList;
 	//private AudioClip boomSound;
 	static String playerName;
 	//DirectionListener KeyListener;
-
-
+	
+	
 	// 버튼 토글을 위한 비트 연산에 사용될 상수들
 	//private final int START = 1;
 	//private final int DESCRIPTION = 2;
@@ -113,7 +100,7 @@ public class Main {
 
 	public void go()
 	{
-		frame.setSize(900,900);
+		frame.setSize(1000,1000);
 		frame.setTitle("Penguin Loves Coffee");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
@@ -156,9 +143,9 @@ public class Main {
 		start.addActionListener(new StartListener());
 		end.addActionListener(new EndListener());
 		description.addActionListener(new DescriptionListener());
-		gamePanel.addKeyListener(new DirectionListener());
-//		prepareList();
-
+		//gamePanel.addKeyListener(new DirectionListener());
+		prepareList();
+		
 		//player = new PosImageIcon(getClass().getResource(PLAY_CH), ,0,gamePanelWidth, gamePanelHeight);
 
 		try 
@@ -168,7 +155,7 @@ public class Main {
 			// 위의 방법은 상대경로를 나타내지 못하는 방법이어서, jar파일로 배포판을 만들때 경로를 찾지 못하는
 			// 문제가 생김. 따라서 getClass()를 사용하여 상대적인 URL을 구하는 방법을 아래처럼 사용해야 함
 			// 여기에서 root가 되는 폴더는 현재 이 프로그램이 수행되는 곳이니 같은 레벨에 넣어주어야 함
-			//			backgroundSound = JApplet.newAudioClip(getClass().getResource(START_SOUND));
+//			backgroundSound = JApplet.newAudioClip(getClass().getResource(START_SOUND));
 			;
 		}
 		catch(Exception e)
@@ -190,20 +177,12 @@ public class Main {
 	//(int)(Math.random()*WIDTH-50)
 
 	void prepareList() {
-		int rand_item_n = 0;
 		fallingList = new ArrayList<>();
-		
-		rand_item_n = (int) (Math.random()*4);
-		fallingList.add(new Direction_CS(item_list[rand_item_n], (int) (Math.random()*200),0,CS_MARGIN,CS_MARGIN));
-		rand_item_n = (int) (Math.random()*4);
-		fallingList.add(new Direction_CS(item_list[rand_item_n], (int) (Math.random()*200+200),0,CS_MARGIN,CS_MARGIN));
-		rand_item_n = (int) (Math.random()*4);
-		fallingList.add(new Direction_CS(item_list[rand_item_n], (int) (Math.random()*200+400),0,CS_MARGIN,CS_MARGIN));
-		rand_item_n = (int) (Math.random()*4);
-		fallingList.add(new Direction_CS(item_list[rand_item_n], (int) (Math.random()*200+600),0,CS_MARGIN,CS_MARGIN));
+		fallingList.add(new Direction_CS(COFFEE1, (int) (Math.random()*700+1),0,CS_MARGIN,CS_MARGIN));
+		fallingList.add(new Direction_CS(COFFEE2, (int) (Math.random()*700+1),0,CS_MARGIN,CS_MARGIN));
+		fallingList.add(new Direction_CS(COFFEE3, (int) (Math.random()*700+1),0,CS_MARGIN,CS_MARGIN));
+		fallingList.add(new Direction_CS(STONE, (int) (Math.random()*700+1),0,CS_MARGIN,CS_MARGIN));
 	}
-	
-	
 
 
 
@@ -227,13 +206,13 @@ public class Main {
 			g.drawImage(playImage, 0, 0, gamePanelWidth,gamePanelHeight,this);
 
 			Image penguinImage = new ImageIcon(getClass().getResource(PLAY_CH)).getImage();
-			g.drawImage(penguinImage, X, INIT_POS_Y, 100, 150,this);
-
+			g.drawImage(penguinImage, 0, 500, gamePanelWidth,gamePanelHeight,this);
+			
 			for(Direction_CS cs : fallingList) {
 				cs.draw(g); 
 			}
-
-
+			
+			
 			//Image penguinImage = new ImageIcon(getClass().getResource(PLAY_CH)).getImage();
 			//g.drawImage(penguinImage, 0, 500, 100, 150, this);
 
@@ -270,12 +249,13 @@ public class Main {
 			gamePanel.setFocusable(true);
 			gamePanel.requestFocus();
 			gamePanel.repaint();
-
-			//			backgroundSound.play();
+			
+//			backgroundSound.play();
 			goAnime.start();
+			move();
 			prepareList();
-
-
+			
+			
 		}
 	}
 
@@ -301,37 +281,18 @@ public class Main {
 	{
 		public void actionPerformed(ActionEvent event)
 		{
-			falling();
+			move();
 		}
 	}
-	
-	void falling()
+
+	void move()
 	{
-		
+
 		for(int i =0; i<fallingList.size();i++)
 		{
-			if(((X-100) < fallingList.get(i).pX && fallingList.get(i).pX < (X+200)) && INIT_POS_Y==fallingList.get(i).pY+100)
-			{
-				String _name = fallingList.get(i).name;
-				switch(_name)
-				{
-				case "COFFEE1" : score++; break;
-				case "COFFEE2" : score++; break;
-				case "COFFEE3" : score++; break;
-				case "STONE" : finishGame(); break;
-				}
-			}
-			
 			fallingList.get(i).pY++;
 			if(fallingList.get(i).pY==700)
-			{
-				fallingList.remove(i);
-				
-				int rand_item_n = 0;
-				rand_item_n = (int) (Math.random()*4);
-//				fallingList[i] = (new Direction_CS(item_list[rand_item_n], (int) (Math.random()*200),0,CS_MARGIN,CS_MARGIN));
-				fallingList.add(i, (new Direction_CS(item_list[rand_item_n], (int) (Math.random()*200 + i*200),0,CS_MARGIN,CS_MARGIN)));
-			}
+				fallingList.remove(0);
 		}
 
 		//WIDTH = frame.getWidth();
@@ -345,38 +306,29 @@ public class Main {
 	// finish game 
 	private void finishGame()
 	{
-		//		backgroundSound.stop();
+//		backgroundSound.stop();
 		gamePanel.setFocusable(false);
 
 	}
-
-	class DirectionListener implements KeyListener
-	{
-		public void keyPressed(KeyEvent e)
-		{
-			int keycode = e.getKeyCode();
-			switch(keycode)
-			{
-			case KeyEvent.VK_LEFT: 
-				System.out.println("pos_x: " + X);
-				X -= MOV_POS_X;
-				if(X<=0)
-					X=0;
-				break;
-
-			case KeyEvent.VK_RIGHT: 
-				System.out.println("pos_x: " + X);
-				X += MOV_POS_X;
-				if(X>=800)
-					X=800;
-				break;
-			}
-
-		}
-
-		public void keyTyped(KeyEvent event) {}
-		public void keyReleased(KeyEvent event) {}
-
-	}	
 	
+//	class DirectionListener implements KeyListener
+//	{
+//		public void keyPressed(KeyEvent e)
+//		{
+//			int keycode = e.getKeyCode();
+//			switch(keycode)
+//			{
+//			case KeyEvent.VK_LEFT: 
+//				if()
+//					X-=10; 
+//				break;
+//			case KeyEvent.VK_RIGHT: X+=10; break;
+//			}
+//			
+//		}
+//	}
+	//public void keyTyped(KeyEvent event) {}
+	//public void KeyReleased(KeyEvent event) {}
+
+
 }
